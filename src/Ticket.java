@@ -1,6 +1,7 @@
 public class Ticket {
 
 	private static int nextID = 0;
+	
 	private int ticketId;
 	private boolean usado;
 	private int valor;

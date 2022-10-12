@@ -12,12 +12,12 @@ public class Casino {
 		
     }
 
-    public void comprarTicket() {
-    	ticketsEmitidos.add(caja.comprarTicket(500));
+    public void comprarTicket(int value) {
+    	ticketsEmitidos.add(caja.comprarTicket(value));
     }
 
-    public void crearMaquina() {
-    	maquinas.add(new Tragamonedas( 50, 200, 50, 4));
+    public void crearMaquina(int precioJugada, int recaudacionInicial, int recaudacionMinima, int catidadCasillas) {
+    	maquinas.add(new Tragamonedas( precioJugada, recaudacionInicial, recaudacionMinima, catidadCasillas));
     }
 
     

@@ -31,7 +31,6 @@ public class Tragamonedas {
 
     	this.mayorPremio = 0;
     	this.credito = 0;
-    	this.casillas = new ArrayList<Integer>();
     }
 
     public void AgregarCredito(int cantidad) {
@@ -39,6 +38,8 @@ public class Tragamonedas {
     }
 
     public void Jugar() {
+    	
+    	this.casillas = new ArrayList<Integer>();
     	
     	if (recaudacion - credito - mayorPremio > RECAUDACION_MINIMA) {
     		
@@ -69,15 +70,16 @@ public class Tragamonedas {
     	}
     }
 
-    public void AgregarPremio(int ganancia, int fruit1, int fruit2, int fruit3) {
+    public void AgregarPremio(int ganancia, int... fruits) {
     	
     	if (ganancia > mayorPremio)
     		mayorPremio = ganancia;
     	
     	ArrayList<Integer> combinacion = new ArrayList<Integer>();
-    	combinacion.add(fruit1);
-    	combinacion.add(fruit2);
-    	combinacion.add(fruit3);
+    	for (int fruit: fruits)
+    	{
+    		combinacion.add(fruit);    		
+    	}
     	
     	premios.add(new Premio(combinacion, CANTIDAD_CASILLAS, ganancia));
     }
