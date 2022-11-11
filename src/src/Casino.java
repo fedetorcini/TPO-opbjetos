@@ -107,6 +107,20 @@ public class Casino {
 		return maquinaActiva.getCantidadPremios();
 	}
 
+	public void jugarSinBeneficios() {
+		if (maquinaActiva != null)
+		{
+			maquinaActiva.jugarSinBeneficio();		
+		}
+	}
+
+	public void jugarSinBeneficiosArreglada() {
+		if (maquinaActiva != null)
+		{
+			maquinaActiva.jugarSinBeneficioArreglado();		
+		}		
+	}
+
 	
 	
 

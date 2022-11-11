@@ -236,4 +236,106 @@ public class CasinoTests
 		assertEquals(creditoEsperado, myCasino.getCredito());
 	}
 	
+
+	@Test	
+	public void Test12MaquinaSeQuedaSinSaldoJugadorDecideJugarSinRecopensa () 
+	{
+		//Creo maquina con premio
+		Casino myCasino = new Casino();
+		int costoJugadaA = 10;
+		int idMaquinaA = myCasino.crearMaquina(costoJugadaA  , 300 , 100 , 3);
+		
+		//Creo 4 maquinas de diferentes premios
+		
+		int segundoPremioA = 150;
+		myCasino.seleccionarMaquinaActiva(idMaquinaA);
+		myCasino.agregarPremio(200			  ,2,2,1);
+		myCasino.agregarPremio(segundoPremioA ,1,1,1);
+		
+		//Compro ticket
+		int valorInicialTicket = 200;
+		int idTicket = myCasino.comprarTicket(valorInicialTicket);
+	
+		myCasino.cargarCredito(idTicket);
+		assertEquals(200, myCasino.getCredito());
+		
+		//Gano segundoPremioA
+		myCasino.jugarConMaquinaArreglada();
+		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito());
+	
+		//Juego no hay saldo sufieciente lanza error y pregunta si seguir jugando
+		myCasino.jugarConMaquina();
+		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 1 sola jugada + el premio ganado
+		myCasino.jugarSinBeneficios();
+		assertEquals(valorInicialTicket - costoJugadaA * 2 + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 2 jugadas + el premio ganado de la primera
+	}
+	
+	
+	@Test	
+	public void Test13MaquinaSeQuedaSinSaldoJugadorGanaPeroNoRecibeRecompensa () 
+	{
+		//Creo maquina con premio
+		Casino myCasino = new Casino();
+		int costoJugadaA = 10;
+		int idMaquinaA = myCasino.crearMaquina(costoJugadaA  , 300 , 100 , 3);
+		
+		//Creo 4 maquinas de diferentes premios
+		
+		int segundoPremioA = 150;
+		myCasino.seleccionarMaquinaActiva(idMaquinaA);
+		myCasino.agregarPremio(200			  ,2,2,1);
+		myCasino.agregarPremio(segundoPremioA ,1,1,1);
+		
+		//Compro ticket
+		int valorInicialTicket = 200;
+		int idTicket = myCasino.comprarTicket(valorInicialTicket);
+	
+		myCasino.cargarCredito(idTicket);
+		assertEquals(200, myCasino.getCredito());
+		
+		//Gano segundoPremioA
+		myCasino.jugarConMaquinaArreglada();
+		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito());
+	
+		//Juego no hay saldo sufieciente lanza error y pregunta si seguir jugando
+		myCasino.jugarConMaquina();
+		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 1 sola jugada + el premio ganado
+		myCasino.jugarSinBeneficiosArreglada();
+		assertEquals(valorInicialTicket - costoJugadaA * 2 + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 2 jugadas + el premio ganado de la primera
+	}
+	
+	@Test	
+	public void Test14JugadorJuegaHastaGanarNoArreglado() 
+	{
+		//Creo maquina con premio
+		Casino myCasino = new Casino();
+		int costoJugadaA = 10;
+		int idMaquinaA = myCasino.crearMaquina(costoJugadaA  , 300 , 100 , 3);
+		
+		//Creo 4 maquinas de diferentes premios
+		
+		int premioA = 150;
+		myCasino.seleccionarMaquinaActiva(idMaquinaA);
+		myCasino.agregarPremio(premioA		  ,2,2,1);
+		
+		//Compro ticket
+		int valorInicialTicket = 1000000;
+		int idTicket = myCasino.comprarTicket(valorInicialTicket);
+	
+		myCasino.cargarCredito(idTicket);
+		assertEquals(valorInicialTicket, myCasino.getCredito());
+		
+		//Gano segundoPremioA
+		int ultimoCredito = myCasino.getCredito();
+		int vecesJugada = 0;
+		do
+		{
+			myCasino.jugarConMaquina();
+			vecesJugada++;
+			ultimoCredito -= costoJugadaA;
+		}
+		while (ultimoCredito >= myCasino.getCredito());
+		assertEquals(valorInicialTicket - costoJugadaA * vecesJugada + premioA, myCasino.getCredito());
+	}
+	
 }

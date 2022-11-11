@@ -38,7 +38,7 @@ public class Tragamonedas {
     	credito += cantidad;
     }
 
-    public void realizarTiro() {
+    public Premio realizarTiro() {
     	Random ran = new Random();
     	for (int i = 0 ; i < CANTIDAD_CASILLAS; i++)
     	{
@@ -48,13 +48,11 @@ public class Tragamonedas {
     	for(Premio premio: premios)
     	{
     		if (premio.tengoEsaCombinacion(casillas)) {
-    			int valorPremio = premio.getGanancia();
-    			credito += valorPremio;
-    			recaudacion -= valorPremio;
-    			System.out.println("Felicidades GANASTE");
+    			return premio;
     		}
     		
     	}
+    	return null;
     }
 
     public void jugar() {
@@ -71,7 +69,14 @@ public class Tragamonedas {
     		recaudacion += precioJugada;
     		credito -= precioJugada;
     		System.out.println("Realizando tiro....");
-    		realizarTiro();
+    		Premio resultado = realizarTiro();
+    		if(resultado != null)
+    		{
+    			int valorPremio = resultado.getGanancia();
+    			credito += valorPremio;
+    			recaudacion -= valorPremio;
+    			System.out.println("Felicidades GANASTE");
+    		}
     	}
     	//else
     		//notificar();
@@ -81,7 +86,7 @@ public class Tragamonedas {
 	 * Puramente para testing, genera un resultado simpre igual.
 	 * No depende del azar
 	 */
-    public void realizarTiroArreglado() {
+    public Premio realizarTiroArreglado() {
     	for (int i = 0 ; i < CANTIDAD_CASILLAS; i++)
     	{
     		casillas.add(1);
@@ -90,13 +95,11 @@ public class Tragamonedas {
     	for(Premio premio: premios)
     	{
     		if (premio.tengoEsaCombinacion(casillas)) {
-    			int valorPremio = premio.getGanancia();
-    			credito += valorPremio;
-    			recaudacion -= valorPremio;
-    			System.out.println("Felicidades GANASTE");
+    			return premio;
     		}
     		
     	}
+    	return null;
     }
     
     /*
@@ -117,13 +120,59 @@ public class Tragamonedas {
     		recaudacion += precioJugada;
     		credito -= precioJugada;
     		System.out.println("Realizando tiro....");
-    		realizarTiroArreglado();
+    		Premio resultado = realizarTiroArreglado();
+    		
+    		if(resultado != null)
+    		{
+    			int valorPremio = resultado.getGanancia();
+    			credito += valorPremio;
+    			recaudacion -= valorPremio;
+    			System.out.println("Felicidades GANASTE");
+    		}
     	}
     	//else
     		//notificar();
     }
     
 
+    /*
+	 * Puramente para testing, genera un resultado simpre igual.
+	 * No depende del azar
+	 */
+    public void jugarSinBeneficioArreglado() {
+    	this.casillas = new ArrayList<Integer>();
+    	if (credito - precioJugada < 0)
+    	{
+    		System.out.println("No hay saldo suficiente");
+    	}
+    	
+		recaudacion += precioJugada;
+		credito -= precioJugada;
+		System.out.println("Realizando tiro....");
+		Premio resultado = realizarTiroArreglado();
+		if(resultado != null)
+		{
+			System.out.println("Felicidades GANASTE");
+		}
+    }
+    
+    public void jugarSinBeneficio() {
+    	this.casillas = new ArrayList<Integer>();
+    	if (credito - precioJugada < 0)
+    	{
+    		System.out.println("No hay saldo suficiente");
+    	}
+    	
+		recaudacion += precioJugada;
+		credito -= precioJugada;
+		System.out.println("Realizando tiro....");
+		Premio resultado = realizarTiro();
+		if(resultado != null)
+		{
+			System.out.println("Felicidades GANASTE");
+		}
+    }
+    
     public void agregarPremio(int ganancia, int... fruits) {
     	
     	//Verifico que largos coincidan
@@ -182,5 +231,6 @@ public class Tragamonedas {
 	public int getCantidadPremios() {
 		return premios.size();
 	}
+
 
 }
