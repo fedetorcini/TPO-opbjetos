@@ -1,3 +1,4 @@
+package src;
 public class Ticket {
 
 	private static int nextID = 0;
@@ -24,7 +25,15 @@ public class Ticket {
 	}
 
 	public boolean esValido() {
-		return usado;
+		return !usado;
+	}
+
+	public int getId() {
+		return ticketId;
+	}
+
+	public int getValor() {
+		return valor;
 	}
 
 }
