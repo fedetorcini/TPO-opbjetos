@@ -2,8 +2,10 @@ package src;
 
 import java.util.*;
 
+import Exceptions.CantidadDeFrutasInvalidaException;
 import Exceptions.NoHaySaldoSuficienteException;
 import Exceptions.NoSePuedePagarPremioException;
+import Exceptions.YaExistePremioConEsaCombinacionException;
 
 public class Tragamonedas {
 
@@ -221,6 +223,12 @@ public class Tragamonedas {
 			{
 				premios.add(new Premio(combinacion, CANTIDAD_CASILLAS, ganancia));
     		}
+			else {
+				throw new YaExistePremioConEsaCombinacionException();
+			}
+    	}
+    	else {
+			throw new CantidadDeFrutasInvalidaException();
     	}
     }
 

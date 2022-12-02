@@ -26,8 +26,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
+import Exceptions.CantidadDeFrutasInvalidaException;
 import Exceptions.NoHaySaldoSuficienteException;
 import Exceptions.NoSePuedePagarPremioException;
+import Exceptions.YaExistePremioConEsaCombinacionException;
 import javafx.scene.image.Image;
 import src.Casino;
 import src.Ticket;
@@ -267,9 +269,14 @@ public class Principal extends JFrame {
 		    			frutasArr[i] = frutasList.get(i);
 		    		}		    		
 		    		controlador.agregarPremio(Integer.parseInt(valorPremioTextField.getText()),frutasArr);
-		    	} catch (NumberFormatException error){
-		    		JOptionPane.showMessageDialog(null, "<html><h3><center>Verifique los datos ingresados y vuelva a intentar<h3>", "Tragamonedas Factory", JOptionPane.WARNING_MESSAGE);
+		    	} catch (NumberFormatException ex1){
+		    		JOptionPane.showMessageDialog(null, "<html><h3><center>Solo se aceptan valores numericos<h3>", "Tragamonedas", JOptionPane.ERROR_MESSAGE);
+		    	} catch (YaExistePremioConEsaCombinacionException ex2){
+		    		JOptionPane.showMessageDialog(null, "<html><h3><center>No puede ingresar premios con combinacion repetida<h3>", "Tragamonedas", JOptionPane.ERROR_MESSAGE);
+		    	} catch (CantidadDeFrutasInvalidaException ex3){
+		    		JOptionPane.showMessageDialog(null, "<html><h3><center>Verifique la cantidad de frutas<h3>", "Tragamonedas", JOptionPane.ERROR_MESSAGE);
 		    	}
+		    	
 		    	frutasList = new ArrayList<Integer>();
 		    	valorPremioTextField.reset();
 		    	frutasElegidas.setText("");
