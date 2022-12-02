@@ -3,7 +3,10 @@ package Test;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 
+import Exceptions.NoHaySaldoSuficienteException;
+import Exceptions.NoSePuedePagarPremioException;
 import src.Casino;
 import src.Ticket;
 
@@ -29,7 +32,9 @@ public class CasinoTests
 		int idMaquina = myCasino.crearMaquina(10, 8000, 100, 4);
 		myCasino.seleccionarMaquinaActiva(idMaquina);
 		myCasino.agregarPremio(200,1,1,1,1);
-		myCasino.jugarConMaquina();
+		NoHaySaldoSuficienteException thrown = Assertions.assertThrows(NoHaySaldoSuficienteException.class, () -> {
+			myCasino.jugarConMaquina();
+		});
 	}
 	
 	@Test
@@ -47,6 +52,7 @@ public class CasinoTests
 		
 		//Juego
 		myCasino.jugarConMaquina();
+
 	}
 	
 	@Test
@@ -68,7 +74,7 @@ public class CasinoTests
 	}
 	
 	@Test
-	public void Test06CreoUnaMaquinaConSaldoYJuegoTresVecesHastaQuedarmeSinSaldo() 
+	public void Test06CreoUnaMaquinaConSaldoYJuegoTresVecesHastaQuedarmeSinSaldo()
 	{
 		//Creo maquina 
 		Casino myCasino = new Casino();
@@ -83,11 +89,17 @@ public class CasinoTests
 		
 		//Juego 3 veces hasta quedarme sin saldo
 		int saldoInicial = valorTicket;
-		myCasino.jugarConMaquina(); //credito deberia bajar 1 valor jugada
+		
+		myCasino.jugarConMaquina();
+		//credito deberia bajar 1 valor jugada
 		assertEquals(myCasino.getCredito(), saldoInicial - valorJugada);
-		myCasino.jugarConMaquina(); //credito deberia bajar 1 valor jugada otra vez
+		myCasino.jugarConMaquina();
+		//credito deberia bajar 1 valor jugada otra vez
 		assertEquals(myCasino.getCredito(), saldoInicial - 2 * valorJugada);
-		myCasino.jugarConMaquina(); //credito no alcanza por ende no juego y credito se mantiene igual
+		NoHaySaldoSuficienteException thrown = Assertions.assertThrows(NoHaySaldoSuficienteException.class, () -> {
+			myCasino.jugarConMaquina();
+		});
+		//credito no alcanza por ende no juego y credito se mantiene igual
 		assertEquals(myCasino.getCredito(), saldoInicial - 2 * valorJugada);
 	}
 
@@ -236,7 +248,7 @@ public class CasinoTests
 	}
 	
 
-	@Test	
+	@Test
 	public void Test12MaquinaSeQuedaSinSaldoJugadorDecideJugarSinRecopensa () 
 	{
 		//Creo maquina con premio
@@ -263,7 +275,9 @@ public class CasinoTests
 		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito());
 	
 		//Juego no hay saldo sufieciente lanza error y pregunta si seguir jugando
-		myCasino.jugarConMaquina();
+		NoSePuedePagarPremioException thrown = Assertions.assertThrows(NoSePuedePagarPremioException.class, () -> {
+			myCasino.jugarConMaquina();
+		});
 		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 1 sola jugada + el premio ganado
 		myCasino.jugarSinBeneficios();
 		assertEquals(valorInicialTicket - costoJugadaA * 2 + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 2 jugadas + el premio ganado de la primera
@@ -296,8 +310,11 @@ public class CasinoTests
 		myCasino.jugarConMaquinaArreglada();
 		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito());
 	
-		//Juego no hay saldo sufieciente lanza error y pregunta si seguir jugando
-		myCasino.jugarConMaquina();
+		//Juego no hay recaudacion suficiente lanza error y pregunta si seguir jugando
+		NoSePuedePagarPremioException thrown = Assertions.assertThrows(NoSePuedePagarPremioException.class, () -> {
+			myCasino.jugarConMaquina();
+		});
+
 		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 1 sola jugada + el premio ganado
 		myCasino.jugarSinBeneficiosArreglada();
 		assertEquals(valorInicialTicket - costoJugadaA * 2 + segundoPremioA, myCasino.getCredito()); //Valor inicial menos el costo de 2 jugadas + el premio ganado de la primera

@@ -2,12 +2,16 @@ package src;
 
 import java.util.*;
 
+import Exceptions.NoSePuedePagarPremioException;
+
 public class Casino {
 
 	private Tragamonedas maquinaActiva;
 	private Caja caja;
 	private Collection<Ticket> ticketsEmitidos;
 	private Collection<Tragamonedas> maquinas;
+	
+	public final static int ERROR = -1;
 
 	public Casino() {
 		caja = new Caja();
@@ -24,16 +28,25 @@ public class Casino {
     public int crearMaquina(int precioJugada, int recaudacionInicial, int recaudacionMinima, int catidadCasillas) {
     	Tragamonedas temp = new Tragamonedas( precioJugada, recaudacionInicial, recaudacionMinima, catidadCasillas);
     	maquinas.add(temp);
-    	return temp.getId();
+    	if (temp != null)
+    	{
+    		return temp.getId();    		
+    	}
+    	return ERROR;
     }
 
     
-    public void cargarCredito(int codigo) 
+    public boolean cargarCredito(int codigo) 
     {
     	Ticket ticket = buscarTicket(codigo);
     	
     	if (ticket != null && ticket.esValido() && maquinaActiva != null)
+    	{
     		maquinaActiva.agregarCredito(ticket.utilize());	
+    		return true;
+    	}
+    	
+    	return false;
     }
 
     
@@ -46,23 +59,25 @@ public class Casino {
 	}
 
 	
-	public void jugarConMaquina() {
+	public int jugarConMaquina(){
 		if (maquinaActiva != null)
 		{
-			maquinaActiva.jugar();		
+			return maquinaActiva.jugar();		
 		}
+		return Tragamonedas.DEFEAT;
 	}
 	
 	/*
 	 * Puramente para testing, genera un resultado simpre igual.
 	 * No depende del azar
 	 */
-	public void jugarConMaquinaArreglada() 
+	public int jugarConMaquinaArreglada() 
 	{
 		if (maquinaActiva != null)
 		{
-			maquinaActiva.jugarArreglada();		
+			return maquinaActiva.jugarArreglada();		
 		}
+		return Tragamonedas.DEFEAT; 
 	}
 
 	
@@ -121,14 +136,15 @@ public class Casino {
 		}		
 	}
 
-	public ArrayList<Integer> obtenerIdMaquinas()
-	{
-		ArrayList<Integer> ids = new ArrayList<Integer>();
+	public Tragamonedas getMaquinaConId(int idBuscado) {
 		for(Tragamonedas maquina : maquinas)
 		{
-			ids.add(maquina.getId());
+			if (maquina.soyEseTragamonedas(idBuscado))
+			{
+				return maquina;
+			}
 		}
-		return ids;
+		return null;
 	}
 	
 

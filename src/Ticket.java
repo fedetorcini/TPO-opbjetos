@@ -1,7 +1,7 @@
 package src;
 public class Ticket {
 
-	private static int nextID = 0;
+	private static int nextID = 100000;
 	
 	private int ticketId;
 	private boolean usado;

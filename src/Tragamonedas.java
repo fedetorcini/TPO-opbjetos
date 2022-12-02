@@ -2,10 +2,16 @@ package src;
 
 import java.util.*;
 
+import Exceptions.NoHaySaldoSuficienteException;
+import Exceptions.NoSePuedePagarPremioException;
+
 public class Tragamonedas {
 
 
-	private static int IDs = 0;
+	public static int VICTORY = 1;
+	public static int DEFEAT = -1;
+	
+	private static int IDs = 1000;
 	private final int myId;
 	private int RECAUDACION_MINIMA;
 	private int CANTIDAD_CASILLAS;
@@ -55,12 +61,14 @@ public class Tragamonedas {
     	return null;
     }
 
-    public void jugar() {
+    public int jugar(){
     	
+    	int result = Tragamonedas.DEFEAT;
     	this.casillas = new ArrayList<Integer>();
     	if (credito - precioJugada < 0)
     	{
-    		System.out.println("No hay saldo suficiente");
+    	
+    		throw new NoHaySaldoSuficienteException();
     	}
     	
     	else if (recaudacion + precioJugada - mayorPremio > RECAUDACION_MINIMA) 
@@ -76,9 +84,14 @@ public class Tragamonedas {
     			credito += valorPremio;
     			recaudacion -= valorPremio;
     			System.out.println("Felicidades GANASTE");
+    			result = Tragamonedas.VICTORY;
     		}
     	}
-    	//throw exeption
+    	else 
+    	{
+    		throw new NoSePuedePagarPremioException();
+    	}
+    	return result;
     }
     
     /*
@@ -105,12 +118,12 @@ public class Tragamonedas {
 	 * Puramente para testing, genera un resultado simpre igual.
 	 * No depende del azar
 	 */
-    public void jugarArreglada()
+    public int jugarArreglada()
     {
     	this.casillas = new ArrayList<Integer>();
     	if (credito - precioJugada < 0)
     	{
-    		System.out.println("No hay saldo suficiente");
+    		throw new NoHaySaldoSuficienteException();
     	}
     	
     	else if (recaudacion + precioJugada - mayorPremio > RECAUDACION_MINIMA) 
@@ -129,7 +142,8 @@ public class Tragamonedas {
     			System.out.println("Felicidades GANASTE");
     		}
     	}
-    	//Throw Exeption
+    	else throw new NoSePuedePagarPremioException();
+		return Tragamonedas.VICTORY;
     }
     
 
@@ -137,11 +151,11 @@ public class Tragamonedas {
 	 * Puramente para testing, genera un resultado simpre igual.
 	 * No depende del azar
 	 */
-    public void jugarSinBeneficioArreglado() {
+    public int jugarSinBeneficioArreglado() {
     	this.casillas = new ArrayList<Integer>();
     	if (credito - precioJugada < 0)
     	{
-    		System.out.println("No hay saldo suficiente");
+    		throw new NoHaySaldoSuficienteException();
     	}
     	
 		recaudacion += precioJugada;
@@ -152,13 +166,15 @@ public class Tragamonedas {
 		{
 			System.out.println("Felicidades GANASTE");
 		}
+		return Tragamonedas.VICTORY;
     }
     
-    public void jugarSinBeneficio() {
+    public int jugarSinBeneficio() {
+    	int result = Tragamonedas.DEFEAT;
     	this.casillas = new ArrayList<Integer>();
     	if (credito - precioJugada < 0)
     	{
-    		System.out.println("No hay saldo suficiente");
+    		throw new NoHaySaldoSuficienteException();
     	}
     	
 		recaudacion += precioJugada;
@@ -168,7 +184,9 @@ public class Tragamonedas {
 		if(resultado != null)
 		{
 			System.out.println("Felicidades GANASTE");
+			result = Tragamonedas.VICTORY;
 		}
+		return result;
     }
     
     public void agregarPremio(int ganancia, int... fruits) {
@@ -228,6 +246,12 @@ public class Tragamonedas {
 
 	public int getCantidadPremios() {
 		return premios.size();
+	}
+	
+	@Override
+	public String toString()
+	{
+		return "Maquina : " + String.valueOf(myId) + " - credito disponible : " + String.valueOf(credito) + " - precio jugada : " + String.valueOf(precioJugada);
 	}
 
 
