@@ -262,5 +262,13 @@ public class Tragamonedas {
 		return "Maquina : " + String.valueOf(myId) + " - credito disponible : " + String.valueOf(credito) + " - precio jugada : " + String.valueOf(precioJugada);
 	}
 
+	public ArrayList<Premio> getPremios() {
+		ArrayList<Premio> combinaciones = new ArrayList<Premio>();
+		for (Premio premio : premios) {
+			combinaciones.add(premio);
+		}
+		return combinaciones;
+	}
+
 
 }

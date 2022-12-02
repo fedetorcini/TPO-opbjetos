@@ -146,6 +146,14 @@ public class Casino {
 		}
 		return null;
 	}
+
+	public ArrayList<Premio> getPremios() {
+		if (maquinaActiva != null)
+		{
+			return maquinaActiva.getPremios();
+		}
+		return new ArrayList<Premio>();
+	}
 	
 
 }

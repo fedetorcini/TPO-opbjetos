@@ -29,4 +29,8 @@ public class Premio {
 		return this.ganancia;
 	}
 
+	public ArrayList<Integer> getCombinacion() {
+		return combinacion;
+	}
+
 }

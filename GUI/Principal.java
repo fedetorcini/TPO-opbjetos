@@ -32,6 +32,7 @@ import Exceptions.NoSePuedePagarPremioException;
 import Exceptions.YaExistePremioConEsaCombinacionException;
 import javafx.scene.image.Image;
 import src.Casino;
+import src.Premio;
 import src.Ticket;
 import src.Tragamonedas;
 
@@ -71,12 +72,13 @@ public class Principal extends JFrame {
 	
 	private long deltaTime = 33;
 	private Color mainColor = Color.GRAY.brighter();
-	private Color secondary = Color.white;
+	private Color secondary = Color.WHITE;
 	private Color mainBackgroundColor = new Color(245, 245, 245);
 	
 	
 	
 	public Principal(){
+		this.setTitle("Fede's Saloon");
 		controlador = new Casino();
 		this.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
 		configurar();
@@ -92,6 +94,7 @@ public class Principal extends JFrame {
 		setComprarTicketForm();
 		setCargarTicketForm();
 		setMachineList();
+		setTragamonedasDisplay();
 		setCreditBanner();
 		setCreateMachineForm();
 		setCrearPremioForm();
@@ -152,6 +155,40 @@ public class Principal extends JFrame {
 		container.add(machineList);
 	}
 	
+	private void setTragamonedasDisplay() 
+	{
+		JLabel label = new JLabel();
+		label.setBounds( 10, 250, 200, 400);
+		label.setOpaque(true);
+		label.setBackground(mainColor);
+		container.add(label);
+		
+		Thread t2 = new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+		    	while (true)
+		    	{
+		    		int contador = 0;
+		    		String result = "<html><h2>PREMIOS";
+		    		for (Premio premio : controlador.getPremios()) {
+		    			contador ++;
+		    			result += "<h3>Premio Nº: " + contador + "<p>";
+		    			result += "Recompensa :" + premio.getGanancia() + "<p>";
+		    			for (Integer fruta : premio.getCombinacion())
+		    			{
+		    				result += EnteroAFruta(fruta) + "<p>";
+		    			}
+		    			result += "-----------<p>";
+		    		}
+		    		label.setText(result);
+					try {
+						Thread.sleep(deltaTime * 30);
+					} catch (InterruptedException e) {}
+		    	}
+		    }
+		}); 
+		t2.start();
+	}
 	private void setCreateMachineForm() 
 	{
 		crearMaquinaButton = new JGradientButton(mainColor, secondary);
@@ -220,6 +257,26 @@ public class Principal extends JFrame {
 		}
 	}
 	
+	private static String EnteroAFruta(int entero)
+	{
+		switch (entero)
+		{
+		case 1:
+			return "Banana";
+		case 2:
+			return "Frutilla";
+		case 3:
+			return "Guinda";
+		case 4:
+			return "Manzana";
+		case 5:
+			return "Sandia";
+		case 6:
+			return "Uva";
+		default:
+			return "NONE";
+		}
+	}
 	private void setCrearPremioForm() 
 	{
 		crearPremioButton = new JGradientButton(mainColor, secondary);
