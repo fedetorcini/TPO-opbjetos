@@ -3,6 +3,9 @@ package src;
 import java.util.*;
 
 import Exceptions.NoSePuedePagarPremioException;
+import src.view.PremioView;
+import src.view.TicketView;
+import src.view.TragamonedasView;
 
 public class Casino {
 
@@ -81,12 +84,12 @@ public class Casino {
 	}
 
 	
-    public Ticket retirarCreditoDeMaquina(){
+    public TicketView retirarCreditoDeMaquina(){
     	if (maquinaActiva != null)
     	{
     		Ticket temp = maquinaActiva.emitirTicket();
     		ticketsEmitidos.add(temp);
-    		return temp;
+    		return temp.getView();
     	}
     	else return null;
     }
@@ -136,23 +139,31 @@ public class Casino {
 		}		
 	}
 
-	public Tragamonedas getMaquinaConId(int idBuscado) {
+	public TragamonedasView getMaquinaConId(int idBuscado) {
 		for(Tragamonedas maquina : maquinas)
 		{
 			if (maquina.soyEseTragamonedas(idBuscado))
 			{
-				return maquina;
+				return maquina.getView();
 			}
 		}
 		return null;
 	}
 
-	public ArrayList<Premio> getPremios() {
+	public ArrayList<PremioView> getPremios() {
 		if (maquinaActiva != null)
 		{
 			return maquinaActiva.getPremios();
 		}
-		return new ArrayList<Premio>();
+		return new ArrayList<PremioView>();
+	}
+
+	public int[] getUltimaCombinacion() {
+		if (maquinaActiva != null)
+		{			
+			return maquinaActiva.getUltimaCombinacion();
+		}
+		return new int[0];
 	}
 	
 

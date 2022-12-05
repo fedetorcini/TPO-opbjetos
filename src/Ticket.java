@@ -1,4 +1,7 @@
 package src;
+
+import src.view.TicketView;
+
 public class Ticket {
 
 	private static int nextID = 100000;
@@ -34,6 +37,13 @@ public class Ticket {
 
 	public int getValor() {
 		return valor;
+	}
+
+	public TicketView getView() {
+		TicketView view = new TicketView();
+		view.setId(ticketId);
+		view.setValor(valor);
+		return view;
 	}
 
 }

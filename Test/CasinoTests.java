@@ -5,10 +5,13 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 
+import Exceptions.CantidadDeFrutasInvalidaException;
 import Exceptions.NoHaySaldoSuficienteException;
 import Exceptions.NoSePuedePagarPremioException;
+import Exceptions.YaExistePremioConEsaCombinacionException;
 import src.Casino;
 import src.Ticket;
+import src.view.TicketView;
 
 public class CasinoTests 
 {
@@ -146,7 +149,7 @@ public class CasinoTests
 		assertEquals(myCasino.getCredito(), creditoEsperado);
 		
 		//Retiro dinero
-		Ticket ticketEmitido = myCasino.retirarCreditoDeMaquina();
+		TicketView ticketEmitido = myCasino.retirarCreditoDeMaquina();
 		assertEquals(ticketEmitido.getValor(), creditoEsperado);
 		assertEquals(myCasino.getCredito(), 0);
 		
@@ -163,7 +166,9 @@ public class CasinoTests
 		myCasino.seleccionarMaquinaActiva(idMaquina);
 		
 		//Agrego premio invalido
-		myCasino.agregarPremio(recompensa,1,1,1,1,1);
+		CantidadDeFrutasInvalidaException thrown = Assertions.assertThrows(CantidadDeFrutasInvalidaException.class, () -> {
+			myCasino.agregarPremio(recompensa,1,1,1,1,1);
+		});
 		
 		//No habra premios
 		int cantidadEsperada = 0;
@@ -182,7 +187,9 @@ public class CasinoTests
 		
 		//Agrego mismo premio 2 veces
 		myCasino.agregarPremio(recompensa,1,1,1,1);
-		myCasino.agregarPremio(recompensa,1,1,1,1);
+		YaExistePremioConEsaCombinacionException thrown = Assertions.assertThrows(YaExistePremioConEsaCombinacionException.class, () -> {
+			myCasino.agregarPremio(recompensa,1,1,1,1);
+		});
 		
 		//Solo habra 1 premio
 		int cantidadEsperada = 1;
@@ -232,7 +239,7 @@ public class CasinoTests
 		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, myCasino.getCredito());
 		
 		//Retiro dinero
-		Ticket ticketEmitido = myCasino.retirarCreditoDeMaquina();
+		TicketView ticketEmitido = myCasino.retirarCreditoDeMaquina();
 		assertEquals(valorInicialTicket - costoJugadaA + segundoPremioA, ticketEmitido.getValor());
 
 		//Pierdo en maquina D

@@ -2,6 +2,8 @@ package src;
 
 import java.util.*;
 
+import src.view.PremioView;
+
 public class Premio {
 
 
@@ -31,6 +33,11 @@ public class Premio {
 
 	public ArrayList<Integer> getCombinacion() {
 		return combinacion;
+	}
+
+	public PremioView getView() {
+		PremioView view  = new PremioView(this);
+		return view;
 	}
 
 }

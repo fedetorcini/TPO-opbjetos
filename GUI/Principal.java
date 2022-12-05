@@ -1,40 +1,25 @@
 package GUI;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import javax.imageio.ImageIO;
-import javax.swing.AbstractButton;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 import Exceptions.CantidadDeFrutasInvalidaException;
 import Exceptions.NoHaySaldoSuficienteException;
 import Exceptions.NoSePuedePagarPremioException;
 import Exceptions.YaExistePremioConEsaCombinacionException;
-import javafx.scene.image.Image;
 import src.Casino;
-import src.Premio;
-import src.Ticket;
-import src.Tragamonedas;
+import src.view.PremioView;
+import src.view.TicketView;
+import src.view.TragamonedasView;
 
 
 public class Principal extends JFrame {
@@ -63,11 +48,11 @@ public class Principal extends JFrame {
 	private CircleButton retirarButton;
 
 	private JLabel creditGUI;
-	private JComboBox<Tragamonedas> machineList;
+	private JComboBox<TragamonedasView> machineList;
 	private Casino controlador;
 	private Container container;
 		
-	private int WINDOW_HEIGHT = 900;
+	private int WINDOW_HEIGHT = 800;
 	private int WINDOW_WIDTH = 900;
 	
 	private long deltaTime = 33;
@@ -140,7 +125,7 @@ public class Principal extends JFrame {
 
 	private void setMachineList()
 	{
-		machineList = new JComboBox<Tragamonedas>();
+		machineList = new JComboBox<TragamonedasView>();
 		machineList.setBounds( 10, 210, 400, 30);
 		machineList.setOpaque(true);
 		machineList.setBackground(mainColor);
@@ -148,7 +133,7 @@ public class Principal extends JFrame {
 		    @Override
 		    public void actionPerformed(ActionEvent e) 
 		    {	
-		    	int idMaquina = ((Tragamonedas) machineList.getSelectedItem()).getId();
+		    	int idMaquina = ((TragamonedasView) machineList.getSelectedItem()).getId();
 		    	controlador.seleccionarMaquinaActiva(idMaquina);
 		    }
 		});
@@ -158,7 +143,7 @@ public class Principal extends JFrame {
 	private void setTragamonedasDisplay() 
 	{
 		JLabel label = new JLabel();
-		label.setBounds( 10, 250, 200, 400);
+		label.setBounds( 10, 250, 200, 350);
 		label.setOpaque(true);
 		label.setBackground(mainColor);
 		container.add(label);
@@ -170,7 +155,7 @@ public class Principal extends JFrame {
 		    	{
 		    		int contador = 0;
 		    		String result = "<html><h2>PREMIOS";
-		    		for (Premio premio : controlador.getPremios()) {
+		    		for (PremioView premio : controlador.getPremios()) {
 		    			contador ++;
 		    			result += "<h3>Premio Nº: " + contador + "<p>";
 		    			result += "Recompensa :" + premio.getGanancia() + "<p>";
@@ -188,6 +173,29 @@ public class Principal extends JFrame {
 		    }
 		}); 
 		t2.start();
+		
+		
+		JLabel ultimaCombinacionDisplay = new JLabel();
+		ultimaCombinacionDisplay.setBounds( 220, 250, 200, 350);
+		ultimaCombinacionDisplay.setOpaque(true);
+		ultimaCombinacionDisplay.setBackground(mainColor);
+		container.add(ultimaCombinacionDisplay);
+		
+		Thread t3 = new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+		    	while (true)
+		    	{
+		    		String text = "<html><h2>ULTIMA COMBINACION <p>";
+	    			for (int fruta : controlador.getUltimaCombinacion())
+	    			{
+	    				text += EnteroAFruta(fruta) + "<p>";
+	    			}
+		    		ultimaCombinacionDisplay.setText(text);
+		    	}
+		    }
+		}); 
+		t3.start();
 	}
 	private void setCreateMachineForm() 
 	{
@@ -205,7 +213,7 @@ public class Principal extends JFrame {
 		    		int recaudacionIncial = Integer.parseInt(recaudacionIncialTextField.getText());
 		    		int recaudacionMinima = Integer.parseInt(recaudacionMinimaTextField.getText());
 		    		int catidadCasillas = Integer.parseInt(catidadCasillasTextField.getText());
-		    		Tragamonedas temp = controlador.getMaquinaConId(controlador.crearMaquina(precioJugada, recaudacionIncial, recaudacionMinima, catidadCasillas));
+		    		TragamonedasView temp = controlador.getMaquinaConId(controlador.crearMaquina(precioJugada, recaudacionIncial, recaudacionMinima, catidadCasillas));
 		    		if ( temp != null )
 		    		{
 		    			machineList.addItem(temp);
@@ -241,17 +249,17 @@ public class Principal extends JFrame {
 		switch (fruta)
 		{
 		case "Banana":
-			return 1;
+			return 0;
 		case "Frutilla":
-			return 2;
+			return 1;
 		case "Guinda":
-			return 3;
+			return 2;
 		case "Manzana":
-			return 4;
+			return 3;
 		case "Sandia":
-			return 5;
+			return 4;
 		case "Uva":
-			return 6;
+			return 5;
 		default:
 			return -1;
 		}
@@ -261,17 +269,17 @@ public class Principal extends JFrame {
 	{
 		switch (entero)
 		{
-		case 1:
+		case 0:
 			return "Banana";
-		case 2:
+		case 1:
 			return "Frutilla";
-		case 3:
+		case 2:
 			return "Guinda";
-		case 4:
+		case 3:
 			return "Manzana";
-		case 5:
+		case 4:
 			return "Sandia";
-		case 6:
+		case 5:
 			return "Uva";
 		default:
 			return "NONE";
@@ -423,7 +431,7 @@ public class Principal extends JFrame {
 	private void setJugarButton()
 	{
 		jugarButton = new CircleButton("Jugar", mainColor, secondary, Color.RED);
-		jugarButton.setBounds( 60, WINDOW_HEIGHT - 200, 100, 100);
+		jugarButton.setBounds( 60, WINDOW_HEIGHT - 170, 100, 100);
 		jugarButton.setFont(new Font("Arial", Font.BOLD, 30));
 		container.add(jugarButton);
 		
@@ -432,8 +440,8 @@ public class Principal extends JFrame {
 		    public void actionPerformed(ActionEvent e)
 		    {
 		    	try {
-					int result = controlador.jugarConMaquinaArreglada();
-					if (result == Tragamonedas.VICTORY)
+					int result = controlador.jugarConMaquina();
+					if (result == TragamonedasView.VICTORY)
 					{
 						JOptionPane.showMessageDialog(null,
 								"<html><center> HAS GANADO!",
@@ -461,7 +469,7 @@ public class Principal extends JFrame {
 	void setRetirarButton ()
 	{
 		retirarButton = new CircleButton("Retirar", mainColor, secondary, Color.CYAN);
-		retirarButton.setBounds( 200, WINDOW_HEIGHT - 187, 75, 75);
+		retirarButton.setBounds( 200, WINDOW_HEIGHT - 150, 75, 75);
 		retirarButton.setFont(new Font("Arial", Font.BOLD, 20));
 		container.add(retirarButton);
 		
@@ -469,11 +477,11 @@ public class Principal extends JFrame {
 			@Override
 		    public void actionPerformed(ActionEvent e) {
 				if (controlador.getCredito() > 0) {
-		    		Ticket ticket = controlador.retirarCreditoDeMaquina();
+		    		TicketView ticket = controlador.retirarCreditoDeMaquina();
 		    		if (ticket != null)
 		    		{
 	    				JOptionPane.showMessageDialog(null,
-	    						"<html><h1><center>Id Ticket: " 
+	    						"<html><h1><cfenter>Id Ticket: " 
 	    						+ ticket.getId() + "<p>valor : " + ticket.getValor() + 
 	    						"<h3><center>Recuerda Anotar el Id del Ticket."
 	    						+ "<h3<center>NO Hay reembolzo en caso de perdida.",
@@ -487,10 +495,3 @@ public class Principal extends JFrame {
 		});
 	}
 }
-
-
-/*
- * Fruits to number and number to fruit
- * exceptions
- * popups
- */

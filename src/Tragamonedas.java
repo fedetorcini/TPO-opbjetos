@@ -6,6 +6,8 @@ import Exceptions.CantidadDeFrutasInvalidaException;
 import Exceptions.NoHaySaldoSuficienteException;
 import Exceptions.NoSePuedePagarPremioException;
 import Exceptions.YaExistePremioConEsaCombinacionException;
+import src.view.PremioView;
+import src.view.TragamonedasView;
 
 public class Tragamonedas {
 
@@ -24,6 +26,7 @@ public class Tragamonedas {
     private int mayorPremio;
 	
     private ArrayList<Integer> casillas;
+    private ArrayList<Integer> ultimaCombinacion;
     private Collection<Premio> premios;
     
     public Tragamonedas( int precioJugada, int recaudacionInicial, int RECAUDACION_MINIMA, int CANTIDAD_CASILLAS) {
@@ -40,6 +43,8 @@ public class Tragamonedas {
 
     	this.mayorPremio = 0;
     	this.credito = 0;
+    	this.casillas = new ArrayList<Integer>();
+    	this.ultimaCombinacion = new ArrayList<Integer>();
     }
 
     public void agregarCredito(int cantidad) {
@@ -50,9 +55,9 @@ public class Tragamonedas {
     	Random ran = new Random();
     	for (int i = 0 ; i < CANTIDAD_CASILLAS; i++)
     	{
-    		casillas.add(ran.nextInt() % 6);
+    		casillas.add(Math.abs(ran.nextInt()) % 6);
     	}
-    	
+    	ultimaCombinacion = new ArrayList<Integer>(casillas);
     	for(Premio premio: premios)
     	{
     		if (premio.tengoEsaCombinacion(casillas)) {
@@ -262,12 +267,46 @@ public class Tragamonedas {
 		return "Maquina : " + String.valueOf(myId) + " - credito disponible : " + String.valueOf(credito) + " - precio jugada : " + String.valueOf(precioJugada);
 	}
 
-	public ArrayList<Premio> getPremios() {
-		ArrayList<Premio> combinaciones = new ArrayList<Premio>();
+	public ArrayList<PremioView> getPremios() {
+		ArrayList<PremioView> combinaciones = new ArrayList<PremioView>();
 		for (Premio premio : premios) {
-			combinaciones.add(premio);
+			combinaciones.add(premio.getView());
 		}
+		
 		return combinaciones;
+	}
+
+	public TragamonedasView getView() {
+		TragamonedasView view = new TragamonedasView();
+		Thread t3 = new Thread(new Runnable() {
+		    @Override
+		    public void run() {
+		    	while (true)
+		    	{
+		    		view.setCredito(credito);
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+					}
+		    	}
+		    }
+		}); 
+		t3.start();
+		
+		view.setId(myId);
+		view.setPrecioJugada(precioJugada);
+		return view;
+	}
+
+	public int[] getUltimaCombinacion()
+	{
+		int[] arr = new int[ultimaCombinacion.size()];
+		
+		for (int i = 0; i < ultimaCombinacion.size(); i++)
+		{
+			arr[i] = ultimaCombinacion.get(i);
+		}
+		return arr;
 	}
 
 
